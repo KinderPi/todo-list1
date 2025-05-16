@@ -1,0 +1,207 @@
+/* Общие стили */
+body{
+    font-family: arial, sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.container {
+    background-color: white;
+    padding: 30px;
+    margin-top: 50px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 0 10px rgb(0, 0, 0, 0, 1);
+    border-radius: 10px;
+}
+
+/* Заголовок */
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Форма ввода задач */
+form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+input[type="trxt"] {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid#ccc;
+    border-radius: 5px;
+}
+
+button {
+    padding: 10 px 20 px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover{
+    background-color: #45a049;
+}
+
+/* Список Задач */
+#task-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+#task-list li {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#task-list li.completed {
+    text-decoration: line-through;
+    color: gray;
+    background-color: #f9f9f9;
+}
+
+#task-list li button {
+    background-color: #e53935;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#task-list li button:hover {
+    background-color: #c62828;
+}
+
+/* Статистика */
+.stats {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+}
+
+.edit-input {
+    font-size: 16px;
+    padding: 5px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.filters {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.filter-btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  background-color: #ddd;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.filter-btn.active {
+  background-color: #4CAF50;
+  color: white;
+}
+/* Плавное Появление */
+@keyframes fadeIn {
+    form {
+        opacity: 0;
+        transform: translateY(-10);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Плавное Исчезновение */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.fade-out {
+  animation: fadeOut 0.3s ease forwards;
+}
+
+.clear-all {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#clear-all {
+  padding: 10px 20px;
+  font-size: 14px;
+  background-color: #e53935;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#clear-all:hover {
+  background-color: #c62828;
+}
+
+.dragging {
+  opacity: 0.5;
+}
+
+#task-list li button {
+  background-color: #888;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin-left: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+#task-list li button:hover {
+  background-color: #555;
+}

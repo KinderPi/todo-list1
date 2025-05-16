@@ -1,0 +1,41 @@
+<!DOCTYPE hyml>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Мой список задач</title>
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+    <body>
+  <div class="container">
+    <h1>Мой список задач</h1>
+
+    <!-- ФОРМА -->
+    <form id="task-form">
+      <input type="text" id="task-input" placeholder="Введите задачу..." required />
+      <button type="submit">Добавить</button>
+    </form>
+
+    <!-- СПИСОК ЗАДАЧ -->
+    <ul id="task-list"></ul>
+
+    <!-- СТАТИСТИКА -->
+    <div class="stats">
+      <span>Всего задач: <span id="total-tasks">0</span></span>
+      <span>Выполнено: <span id="completed-tasks">0</span></span>
+    </div>
+
+    <!-- ФИЛЬТРЫ -->
+    <div class="filters">
+      <button data-filter="all" class="filter-btn active">Все</button>
+      <button data-filter="active" class="filter-btn">Активные</button>
+      <button data-filter="completed" class="filter-btn">Выполненные</button>
+      <button id="clear-all">Очистить все задачи</button>
+    </div>
+  </div>
+</div>
+
+
+  <script src="script.js"></script>
+</body>
