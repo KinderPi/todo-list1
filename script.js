@@ -8,6 +8,7 @@ const filterButtons = document.querySelectorAll('.filter-btn');
 const clearAllBtn = document.getElementById('clear-all');
 
 let currentFilter = 'all'; // all, active, completed
+let isDragging = false; // Флаг для отключения рендера при drag & drop
 
 // Загружаем задачи
 let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
@@ -17,7 +18,7 @@ renderTasks();
 form.addEventListener('submit', function (event) {
   event.preventDefault();
   const text = taskInput.value.trim();
-  if (text !== '') {
+  if (text) {
     const newTask = {
       id: Date.now(),
       text: text,
@@ -42,7 +43,7 @@ filterButtons.forEach(button => {
 
 // Отображение задач
 function renderTasks() {
-  taskList.innerHTML = '';
+  if (isDragging) return;
 
   const filteredTasks = tasks.filter(task => {
     if (currentFilter === 'active') return !task.completed;
@@ -50,60 +51,65 @@ function renderTasks() {
     return true;
   });
 
-  filteredTasks.forEach(task => {
-    const li = document.createElement('li');
-    li.className = task.completed ? 'completed' : '';
-    li.setAttribute('draggable', 'true');
-    li.dataset.id = task.id;
-
-    // Текст задачи
-    const span = document.createElement('span');
-    span.textContent = task.text;
-    span.style.cursor = 'pointer';
-    span.addEventListener('click', () => toggleTask(task.id));
-
-    // Кнопка "Редактировать"
-    const editBtn = document.createElement('button');
-    editBtn.textContent = 'Редактировать';
-    editBtn.addEventListener('click', () => {
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.value = task.text;
-      input.className = 'edit-input';
-      li.innerHTML = '';
-      li.appendChild(input);
-      input.focus();
-
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          const newText = input.value.trim();
-          if (newText !== '') {
-            task.text = newText;
-            saveTasks();
-            renderTasks();
-          }
-        }
-      });
-
-      input.addEventListener('blur', () => {
-        renderTasks();
-      });
-    });
-
-    // Кнопка "Удалить"
-    const deleteBtn = document.createElement('button');
-    deleteBtn.textContent = 'Удалить';
-    deleteBtn.addEventListener('click', () => deleteTask(task.id));
-
-    li.appendChild(span);
-    li.appendChild(editBtn);
-    li.appendChild(deleteBtn);
-    li.classList.add('fade-in');
-    taskList.appendChild(li);
-  });
+  taskList.innerHTML = filteredTasks.map(task => `
+    <li 
+      class="${task.completed ? 'completed' : ''}" 
+      draggable="true" 
+      data-id="${task.id}">
+      <span style="cursor: pointer;">${task.text}</span>
+      <button class="edit">Редактировать</button>
+      <button class="delete">Удалить</button>
+    </li>
+  `).join('');
 
   updateStats();
 }
+
+// Обработчик кликов по списку задач (делегирование)
+taskList.addEventListener('click', function(e) {
+  if (e.target.tagName === 'BUTTON' && e.target.classList.contains('delete')) {
+    const id = parseInt(e.target.closest('li').dataset.id);
+    deleteTask(id);
+    return;
+  }
+
+  if (e.target.tagName === 'BUTTON' && e.target.classList.contains('edit')) {
+    const li = e.target.closest('li');
+    const span = li.querySelector('span');
+    const id = parseInt(li.dataset.id);
+    const oldText = span.textContent;
+
+    // Создаем инпут
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = oldText;
+    input.className = 'edit-input';
+
+    // Заменяем span на инпут
+    li.innerHTML = '';
+    li.appendChild(input);
+    input.focus();
+
+    // Сохранение при Enter
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const newText = input.value.trim();
+        if (newText !== '') {
+          tasks = tasks.map(task => 
+            task.id === id ? { ...task, text: newText } : task
+          );
+          saveTasks();
+          renderTasks();
+        }
+      }
+    });
+
+    // Возврат при потере фокуса
+    input.addEventListener('blur', () => {
+      renderTasks();
+    });
+  }
+});
 
 // Переключение выполнения
 function toggleTask(id) {
@@ -159,12 +165,14 @@ function saveTasks() {
 taskList.addEventListener('dragstart', (e) => {
   if (e.target.tagName === 'LI') {
     e.target.classList.add('dragging');
+    isDragging = true;
   }
 });
 
 taskList.addEventListener('dragend', (e) => {
   if (e.target.tagName === 'LI') {
     e.target.classList.remove('dragging');
+    isDragging = false;
 
     const newOrder = [...taskList.children].map(li => parseInt(li.dataset.id));
     const newTasks = [];
@@ -176,6 +184,7 @@ taskList.addEventListener('dragend', (e) => {
 
     tasks = newTasks;
     saveTasks();
+    renderTasks();
   }
 });
 
